@@ -4,12 +4,12 @@ from telegram.ext import Application, MessageHandler, filters, CommandHandler, C
 from telegram import ReplyKeyboardMarkup, InlineKeyboardButton, InlineKeyboardMarkup
 import emoji
 
-# logging.basicConfig(
-#     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
-# )
-# logger = logging.getLogger(__name__)
+logging.basicConfig(
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG
+)
+logger = logging.getLogger(__name__)
 
-TOKEN = "6240755690:AAHlUlD1JoRzv3l7-SmgjcJZFRqWFNIyitE"  # поменять потом
+TOKEN = "6240755690:AAHlUlD1JoRzv3l7-SmgjcJZFRqWFNIyitE"
 
 sqlCon = SqlController()
 
@@ -25,7 +25,7 @@ gender_markup = ReplyKeyboardMarkup(gender_keyboard, one_time_keyboard=True, res
 profile_keyboard = [['Изменить профиль', 'Назад']]
 profile_markup = ReplyKeyboardMarkup(profile_keyboard, one_time_keyboard=True, resize_keyboard=True)
 
-change_profile_keyboard = [['Изменить имя', 'Изменить город', 'Изменить описание'], ['Назад']]
+change_profile_keyboard = [['Изменить имя', 'Изменить город', 'Изменить описание'], ['Удалить описание', 'Назад']]
 change_profile_markup = ReplyKeyboardMarkup(change_profile_keyboard, one_time_keyboard=True, resize_keyboard=True)
 
 rated_inline_keyboard = [[InlineKeyboardButton(emoji.emojize(':thumbs_up:'), callback_data='like'),
@@ -149,19 +149,22 @@ async def echo(update, context):
         elif msg == 'Изменить описание':
             context.user_data['where_is_user'] = "changing_description"
             await update.message.reply_text("Введи новое описание:", reply_markup=back_markup)
+        elif msg == 'Удалить описание':
+            sqlCon.Change_User_Description(update.message.chat.id, '')
+            await send_my_profile(update, context)
         elif msg == 'Назад':
             await send_my_profile(update, context)
     elif context.user_data['where_is_user'] == "changing_name":
         if msg != 'Назад':
-            sqlCon.Chnage_User_Name(update.message.chat.id, msg)
+            sqlCon.Change_User_Name(update.message.chat.id, msg)
         await send_my_profile(update, context)
     elif context.user_data['where_is_user'] == "changing_city":
         if msg != 'Назад':
-            sqlCon.Chnage_User_City(update.message.chat.id, msg)
+            sqlCon.Change_User_City(update.message.chat.id, msg)
         await send_my_profile(update, context)
     elif context.user_data['where_is_user'] == "changing_description":
         if msg != 'Назад':
-            sqlCon.Chnage_User_Description(update.message.chat.id, msg)
+            sqlCon.Change_User_Description(update.message.chat.id, msg)
         await send_my_profile(update, context)
 
 
@@ -252,7 +255,8 @@ async def end_from_getting_data_from_user(update, context):
 
 
 async def stop(update, context):
-    return ConversationHandler.END
+    pass
+    # return ConversationHandler.END
 
 
 def main():

@@ -69,21 +69,21 @@ class SqlController:
         # print(users)
         return users
 
-    def Chnage_User_Name(self, tg_id, new_name):
+    def Change_User_Name(self, tg_id, new_name):
         con = sqlite3.connect(filePath)
         cur = con.cursor()
         cur.execute(f"""UPDATE UsersDB SET name=? WHERE tg_id=?""", (new_name, tg_id))
         con.commit()
         con.close()
 
-    def Chnage_User_City(self, tg_id, new_city):
+    def Change_User_City(self, tg_id, new_city):
         con = sqlite3.connect(filePath)
         cur = con.cursor()
         cur.execute(f"""UPDATE UsersDB SET city=? WHERE tg_id=?""", (new_city, tg_id))
         con.commit()
         con.close()
 
-    def Chnage_User_Description(self, tg_id, new_description):
+    def Change_User_Description(self, tg_id, new_description):
         con = sqlite3.connect(filePath)
         cur = con.cursor()
         cur.execute(f"""UPDATE UsersDB SET description=? WHERE tg_id=?""", (new_description, tg_id))
